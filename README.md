@@ -4,13 +4,13 @@ Guía rápida para levantar un contenedor de PostgreSQL, configurar usuarios y b
 
 ## 🚀 Requisitos previos
 
-* [Docker](https://www.docs.docker.com/get-docker/) instalado y en ejecución.
+- [Docker](https://docs.docker.com/get-docker/) instalado y en ejecución.
 
 ---
 
 ## 1. Levantar PostgreSQL con Docker
 
-Puedes iniciar un contenedor de PostgreSQL ejecutando el siguiente comando en tu terminal (reemplaza las credenciales según tus necesidades):
+Ejecutá el siguiente comando en la terminal para crear e iniciar un contenedor de PostgreSQL. Reemplazá las credenciales según tus necesidades.
 
 ```bash
 docker run --name mi-postgres \
@@ -19,69 +19,107 @@ docker run --name mi-postgres \
   -e POSTGRES_DB=mi_base_de_datos \
   -p 5432:5432 \
   -d postgres
+```
 
---name mi-postgres: Nombre asignado al contenedor.
+**Descripción de los parámetros:**
 
--e POSTGRES_USER=admin: Usuario administrador por defecto.
+- `--name mi-postgres`: asigna un nombre al contenedor.
+- `-e POSTGRES_USER=admin`: define el usuario administrador.
+- `-e POSTGRES_PASSWORD=tu_contrasena`: establece la contraseña del usuario.
+- `-e POSTGRES_DB=mi_base_de_datos`: crea una base de datos inicial.
+- `-p 5432:5432`: expone el puerto de PostgreSQL en la máquina local.
+- `-d postgres`: ejecuta la imagen oficial de PostgreSQL en segundo plano.
 
--e POSTGRES_PASSWORD=tu_contrasena: Contraseña del administrador.
+## 2. Crear un usuario y una base de datos
 
--e POSTGRES_DB=mi_base_de_datos: Base de datos creada automáticamente al iniciar.
+Para crear un usuario adicional y una nueva base de datos, ingresá a la consola de PostgreSQL dentro del contenedor:
 
--p 5432:5432: Expone el puerto de Postgres hacia tu máquina local.
-
--d postgres: Utiliza la última versión oficial de PostgreSQL.
-
-2. Crear un nuevo usuario y base de datos (Opcional)
-Si necesitas crear un usuario adicional y otra base de datos desde la línea de comandos, accede a la consola de PostgreSQL dentro del contenedor:
-
-Bash
+```bash
 docker exec -it mi-postgres psql -U admin -d mi_base_de_datos
-Una vez dentro del prompt de psql, ejecuta las siguientes sentencias SQL:
+```
 
-SQL
+Una vez dentro de `psql`, ejecutá las siguientes sentencias SQL:
+
+```sql
 -- Crear un nuevo usuario
-CREATE USER nuevo_usuario WITH ENCRYPTED PASSWORD 'otra_contrasena';
+CREATE USER nuevo_usuario
+WITH ENCRYPTED PASSWORD 'otra_contrasena';
 
--- Crear una nueva base de datos asignada al usuario
+-- Crear una base de datos asignada al usuario
 CREATE DATABASE otra_bd OWNER nuevo_usuario;
 
--- Otorgar privilegios (si es necesario)
+-- Otorgar privilegios sobre la base de datos
 GRANT ALL PRIVILEGES ON DATABASE otra_bd TO nuevo_usuario;
+```
 
--- Salir de psql
+Para salir de la consola, ejecutá:
+
+```sql
 \q
-3. Subir y ejecutar un archivo SQL en el contenedor
-Supongamos que tienes un archivo llamado script.sql en tu máquina local que deseas ejecutar dentro del contenedor.
+```
 
-Método A: Copiar y ejecutar en dos pasos
-Copiar el archivo desde tu máquina local al contenedor:
+## 3. Ejecutar un archivo SQL en el contenedor
 
-Bash
+Si tenés un archivo llamado `script.sql` en tu máquina local, podés ejecutarlo de las siguientes maneras.
+
+### Método A: Copiar el archivo al contenedor
+
+Primero, copiá el archivo al contenedor:
+
+```bash
 docker cp script.sql mi-postgres:/tmp/script.sql
-Ejecutar el archivo dentro del contenedor usando psql:
+```
 
-Bash
-docker exec -it mi-postgres psql -U admin -d mi_base_de_datos -f /tmp/script.sql
-Método B: Ejecución directa en una sola línea (Redirección)
-Si prefieres no copiar físicamente el archivo al contenedor, puedes enviarlo directamente:
+Luego, ejecutalo utilizando `psql`:
 
-Bash
-docker exec -i mi-postgres psql -U admin -d mi_base_de_datos < script.sql
-🛠️ Comandos útiles
-Ver el estado del contenedor:
+```bash
+docker exec -it mi-postgres \
+  psql -U admin -d mi_base_de_datos -f /tmp/script.sql
+```
 
-Bash
+### Método B: Ejecutar el archivo directamente
+
+También podés ejecutar el archivo sin copiarlo previamente al contenedor:
+
+```bash
+docker exec -i mi-postgres \
+  psql -U admin -d mi_base_de_datos < script.sql
+```
+
+> **Nota:** Ejecutá estos comandos desde el directorio donde se encuentra `script.sql`, o indicá la ruta correspondiente al archivo.
+
+## 🛠️ Comandos útiles
+
+### Ver los contenedores en ejecución
+
+```bash
 docker ps
-Ver los logs de PostgreSQL (útil para depurar):
+```
 
-Bash
+### Consultar los logs de PostgreSQL
+
+Útil para verificar el inicio del servicio o detectar errores.
+
+```bash
 docker logs mi-postgres
-Detener el contenedor:
+```
 
-Bash
+### Detener el contenedor
+
+```bash
 docker stop mi-postgres
-Iniciar nuevamente el contenedor:
+```
 
-Bash
+### Iniciar nuevamente el contenedor
+
+```bash
 docker start mi-postgres
+```
+
+### Acceder nuevamente a PostgreSQL
+
+```bash
+docker exec -it mi-postgres psql -U admin -d mi_base_de_datos
+```
+
+---
