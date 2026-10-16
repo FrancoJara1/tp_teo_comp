@@ -59,7 +59,7 @@ Para salir de la consola, ejecutá:
 ```
 Ejecutá el siguiente comando para conectarte a la nueva base de datos con el usuario creado:
 
-docker exec -it mi-postgres psql -U nuevo_usuario -d otra_bd
+```docker exec -it mi-postgres psql -U nuevo_usuario -d otra_bd```
 
 ## 3. Ejecutar un archivo SQL en el contenedor
 
