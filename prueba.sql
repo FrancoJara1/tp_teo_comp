@@ -17,69 +17,69 @@ truncate table glc_en_fnc;
 
 -- producciones de s (simbolo inicial)
 insert into glc_en_fnc (start, parte_izq, parte_der1, parte_der2, tipo_produccion) values
-(true, 's', 'llavei', 'x1', 2),
-(true, 's', 'llavei', 'llaved', 2);
+(true, 'S', 'LLAVEI', 'X1', 2),
+(true, 'S', 'LLAVEI', 'LLAVED', 2);
 
 -- producciones auxiliares y de estructura principal
 insert into glc_en_fnc (start, parte_izq, parte_der1, parte_der2, tipo_produccion) values
-(false, 'x1', 'b', 'llaved', 2),
-(false, 'b', 'c', 'g', 2),
-(false, 'x2', 'dosp', 'e', 2),
-(false, 'c', 'f', 'x2', 2),
-(false, 'x3', 'strs', 'comillas', 2),
-(false, 'x5', 'strd', 'comillasd', 2),
-(false, 'f', 'comillasd', 'x5', 2),
-(false, 'x4', 'c', 'g', 2),
-(false, 'g', 'coma', 'x4', 2),
-(false, 'g', 'coma', 'c', 2);
+(false, 'X1', 'B', 'LLAVED', 2),
+(false, 'B', 'C', 'G', 2),
+(false, 'X2', 'DOSP', 'E', 2),
+(false, 'C', 'F', 'X2', 2),
+(false, 'X3', 'STRS', 'COMILLAS', 2),
+(false, 'X5', 'STRD', 'COMILLASD', 2),
+(false, 'F', 'COMILLASD', 'X5', 2),
+(false, 'X4', 'C', 'G', 2),
+(false, 'G', 'COMA', 'X4', 2),
+(false, 'G', 'COMA', 'C', 2);
 
 -- producciones de e (valores)
 insert into glc_en_fnc (start, parte_izq, parte_der1, parte_der2, tipo_produccion) values
-(false, 'e', 'comillas', 'x3', 2),
-(false, 'e', 'comillas', 'comillas', 2),
-(false, 'e', 'llavei', 'x1', 2),
-(false, 'e', 'llavei', 'llaved', 2);
+(false, 'E', 'COMILLAS', 'X3', 2),
+(false, 'E', 'COMILLAS', 'COMILLAS', 2),
+(false, 'E', 'LLAVEI', 'X1', 2),
+(false, 'E', 'LLAVEI', 'LLAVED', 2);
 
 -- producciones recursivas de numeros y cadenas
 insert into glc_en_fnc (start, parte_izq, parte_der1, parte_der2, tipo_produccion) values
-(false, 'n', 'digito', 'n', 2),
-(false, 'strs', 'abc', 'strs', 2),
-(false, 'strd', 'abc', 'strd', 2);
+(false, 'N', 'DIGITO', 'N', 2),
+(false, 'STRS', 'ABC', 'STRS', 2),
+(false, 'STRD', 'ABC', 'STRD', 2);
 
 
 -- 3. cargar producciones del tipo 1: var -> terminal (tipo_produccion = 1)
 
 -- terminales especiales (tokens sintacticos)
 insert into glc_en_fnc (start, parte_izq, parte_der1, tipo_produccion) values
-(false, 'llavei', '{', 1),
-(false, 'llaved', '}', 1),
-(false, 'dosp', ':', 1),
-(false, 'comillas', '''', 1),
-(false, 'comillasd', '"', 1),
-(false, 'coma', ',', 1);
+(false, 'LLAVEI', '{', 1),
+(false, 'LLAVED', '}', 1),
+(false, 'DOSP', ':', 1),
+(false, 'COMILLAS', '''', 1),
+(false, 'COMILLASD', '"', 1),
+(false, 'COMA', ',', 1);
 
 -- terminales de digitos (para digito y n)
 insert into glc_en_fnc (start, parte_izq, parte_der1, tipo_produccion) values
-(false, 'digito', '0', 1), (false, 'digito', '1', 1), (false, 'digito', '2', 1), (false, 'digito', '3', 1), (false, 'digito', '4', 1),
-(false, 'digito', '5', 1), (false, 'digito', '6', 1), (false, 'digito', '7', 1), (false, 'digito', '8', 1), (false, 'digito', '9', 1),
-(false, 'n', '0', 1), (false, 'n', '1', 1), (false, 'n', '2', 1), (false, 'n', '3', 1), (false, 'n', '4', 1),
-(false, 'n', '5', 1), (false, 'n', '6', 1), (false, 'n', '7', 1), (false, 'n', '8', 1), (false, 'n', '9', 1);
+(false, 'DIGITO', '0', 1), (false, 'DIGITO', '1', 1), (false, 'DIGITO', '2', 1), (false, 'DIGITO', '3', 1), (false, 'DIGITO', '4', 1),
+(false, 'DIGITO', '5', 1), (false, 'DIGITO', '6', 1), (false, 'DIGITO', '7', 1), (false, 'DIGITO', '8', 1), (false, 'DIGITO', '9', 1),
+(false, 'N', '0', 1), (false, 'N', '1', 1), (false, 'N', '2', 1), (false, 'N', '3', 1), (false, 'N', '4', 1),
+(false, 'N', '5', 1), (false, 'N', '6', 1), (false, 'N', '7', 1), (false, 'N', '8', 1), (false, 'N', '9', 1);
 
 -- terminales de alfabeto (minusculas 97-122 y mayusculas 65-90 para abc, strs y strd)
 insert into glc_en_fnc (start, parte_izq, parte_der1, tipo_produccion)
-select false, 'abc', chr(i), 1 from generate_series(97, 122) i
+select false, 'ABC', chr(i), 1 from generate_series(97, 122) i
 union all
-select false, 'abc', chr(i), 1 from generate_series(65, 90) i;
+select false, 'ABC', chr(i), 1 from generate_series(65, 90) i;
 
 insert into glc_en_fnc (start, parte_izq, parte_der1, tipo_produccion)
-select false, 'strs', chr(i), 1 from generate_series(97, 122) i
+select false, 'STRS', chr(i), 1 from generate_series(97, 122) i
 union all
-select false, 'strs', chr(i), 1 from generate_series(65, 90) i;
+select false, 'STRS', chr(i), 1 from generate_series(65, 90) i;
 
 insert into glc_en_fnc (start, parte_izq, parte_der1, tipo_produccion)
-select false, 'strd', chr(i), 1 from generate_series(97, 122) i
+select false, 'STRD', chr(i), 1 from generate_series(97, 122) i
 union all
-select false, 'strd', chr(i), 1 from generate_series(65, 90) i;
+select false, 'STRD', chr(i), 1 from generate_series(65, 90) i;
 
 
 create table matriz_cyk(
