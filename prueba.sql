@@ -82,13 +82,16 @@ union all
 select false, 'STRD', chr(i), 1 from generate_series(65, 90) i;
 
 
-create table matriz_cyk(
-	i smallint,
-	j smallint,
-	x[] text
+CREATE TABLE matriz_cyk (
+    i smallint,
+    j smallint,
+    x text[] 
 );
 
 create table expression_json(
 	id serial primary key,
 	cadena text
 );
+
+select * from glc_en_fnc;
+select * from matriz_cyk;
