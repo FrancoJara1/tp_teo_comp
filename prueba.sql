@@ -94,8 +94,8 @@ create table expression_json(
 );
 
 
-select '--- contenido de glc_en_fnc ---' as info;
-select * from glc_en_fnc;
+--select '--- contenido de glc_en_fnc ---' as info;
+--select * from glc_en_fnc;
 
-select '--- contenido de matriz_cyk ---' as info;
-select * from matriz_cyk;
+--select '--- contenido de matriz_cyk ---' as info;
+--select * from matriz_cyk;
