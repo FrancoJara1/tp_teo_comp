@@ -93,5 +93,9 @@ create table expression_json(
 	cadena text
 );
 
+
+select '--- contenido de glc_en_fnc ---' as info;
 select * from glc_en_fnc;
+
+select '--- contenido de matriz_cyk ---' as info;
 select * from matriz_cyk;
