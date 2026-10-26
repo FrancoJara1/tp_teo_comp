@@ -216,12 +216,69 @@ begin
     end if;
 end;
 $$ language plpgsql;
-
-
 -- ----------------------------------------------------------
--- 2. función pl/pgsql para mostrar la matriz cyk triangular dinámica
+-- función pl/pgsql para mostrar la matriz cyk en formato de pirámide
 -- ----------------------------------------------------------
-create or replace function ver_matriz_triangular()
+create or replace function ver_matriz_piramide()
+returns text as $$
+declare
+    v_cadena text;
+    v_n int;
+    v_l int; -- longitud (nivel de la pirámide)
+    v_i int;
+    v_j int;
+    v_x text[];
+    v_celda text;
+    v_resultado text := '';
+    v_fila_text text;
+    v_ancho_celda int := 14;
+    v_esp_izq int;
+begin
+    -- obtener la cadena actual evaluada
+    select cadena into v_cadena from expresion_json limit 1;
+    v_n := length(v_cadena);
+    
+    if v_n = 0 or v_cadena is null then
+        return 'no hay ninguna cadena evaluada o la matriz está vacía.';
+    end if;
+
+    v_resultado := '=== pirámide de programación dinámica (cyk) ===' || e'\n\n';
+
+    -- recorrer desde la longitud n (cima) hasta la longitud 1 (base)
+    for v_l in reverse v_n..1 loop
+        -- calcular el espacio izquierdo para dar forma de pirámide centrada
+        v_esp_izq := (v_n - v_l) * (v_ancho_celda / 2);
+        v_fila_text := repeat(' ', v_esp_izq) || 'l=' || rpad(v_l::text, 2) || '| ';
+
+        for v_i in 1..(v_n - v_l + 1) loop
+            v_j := v_i + v_l - 1;
+            select x into v_x from matriz_cyk where i = v_i and j = v_j;
+            
+            if v_x is null then
+                v_celda := '{ }';
+            else
+                v_celda := '{' || array_to_string(v_x, ',') || '}';
+            end if;
+            
+            v_fila_text := v_fila_text || rpad(v_celda, v_ancho_celda) || ' ';
+        end loop;
+
+        v_resultado := v_resultado || v_fila_text || e'\n';
+    end loop;
+
+    -- agregar la leyenda de la cadena en la base
+    v_resultado := v_resultado || e'\n' || '---------------------------------------------------' || e'\n';
+    v_resultado := v_resultado || 'referencia de posiciones de la cadena:' || e'\n';
+    for v_i in 1..v_n loop
+        v_resultado := v_resultado || format('[%s: %s] ', v_i, substring(v_cadena from v_i for 1));
+    end loop;
+    v_resultado := v_resultado || e'\n';
+
+    return v_resultado;
+end;
+$$ language plpgsql;
+
+create or replace function ver_matriz_cyk2()
 returns text as $$
 declare
     v_cadena text;
@@ -232,44 +289,48 @@ declare
     v_celda text;
     v_resultado text := '';
     v_fila_text text;
-    v_cabecera text := '';
+    v_ancho_celda int := 12;
 begin
-    -- obtener la cadena actual evaluada
+    -- Obtener la cadena actual evaluada
     select cadena into v_cadena from expresion_json limit 1;
     v_n := length(v_cadena);
     
     if v_n = 0 or v_cadena is null then
-        return 'no hay ninguna cadena evaluada o la matriz está vacía.';
+        return 'No hay ninguna cadena evaluada o la matriz está vacía.';
     end if;
 
-    -- construir cabecera con los índices j y los caracteres de la cadena
-    v_cabecera := ' i \ j |';
-    for v_j in 1..v_n loop
-        v_cabecera := v_cabecera || '   j=' || v_j || ' (' || substring(v_cadena from v_j for 1) || ')   |';
-    end loop;
-    v_resultado := v_cabecera || e'\n' || repeat('-', length(v_cabecera)) || e'\n';
+    v_resultado := '=== MATRIZ / TABLA DE PARSING CYK (Cuadrícula n x n) ===' || E'\n\n';
 
-    -- construir cada fila i de la matriz triangular
+    -- Encabezado con las columnas (j) y sus caracteres correspondientes
+    v_fila_text := rpad('i \\ j', 8) || ' | ';
+    for v_j in 1..v_n loop
+        v_fila_text := v_fila_text || rpad(format('%s (%s)', v_j, substring(v_cadena from v_j for 1)), v_ancho_celda) || ' ';
+    end loop;
+    v_resultado := v_resultado || v_fila_text || E'\n';
+    v_resultado := v_resultado || repeat('-', length(v_fila_text)) || E'\n';
+
+    -- Filas de la matriz (i desde 1 hasta n)
     for v_i in 1..v_n loop
-        v_fila_text := '  i=' || v_i || '  |';
+        v_fila_text := rpad(format('i = %s', v_i), 8) || ' | ';
         for v_j in 1..v_n loop
             if v_j < v_i then
-                -- celdas por debajo de la diagonal (vacías en cyk)
-                v_fila_text := v_fila_text || '         -          |';
+                -- Mitad inferior de la matriz (no utilizada en CYK)
+                v_celda := '-';
             else
-                -- buscar las variables en la celda (i, j)
+                -- Buscar el conjunto de variables en la matriz CYK
                 select x into v_x from matriz_cyk where i = v_i and j = v_j;
                 if v_x is null then
-                    v_fila_text := v_fila_text || '       { }          |';
+                    v_celda := '{ }';
                 else
                     v_celda := '{' || array_to_string(v_x, ',') || '}';
-                    v_fila_text := v_fila_text || ' ' || rpad(v_celda, 18) || '|';
                 end if;
             end if;
+            v_fila_text := v_fila_text || rpad(v_celda, v_ancho_celda) || ' ';
         end loop;
-        v_resultado := v_resultado || v_fila_text || e'\n';
+        v_resultado := v_resultado || v_fila_text || E'\n';
     end loop;
-    
+
+    v_resultado := v_resultado || E'\n' || 'Cadena evaluada: ' || v_cadena || E'\n';
     return v_resultado;
 end;
 $$ language plpgsql;
@@ -278,8 +339,8 @@ $$ language plpgsql;
 -- ==========================================================
 -- instrucciones de uso
 -- ==========================================================
--- 1. primero ejecuta tu algoritmo con alguna cadena:
+-- 1. ejecuta tu algoritmo:
 --    select cyk('{"a":'b'}');
 --
--- 2. luego visualiza la matriz triangular ejecutando:
---    select ver_matriz_triangular();
+-- 2. visualiza la pirámide ejecutando:
+--    select ver_matriz_piramide();
