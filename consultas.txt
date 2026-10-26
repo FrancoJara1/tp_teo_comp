@@ -1,0 +1,14 @@
+-- ----------------------------------------------------------
+-- 1. Query SQL para mostrar la GLC cargada en glc_en_fnc
+-- ----------------------------------------------------------
+SELECT 
+    CASE WHEN start THEN '★ (Inicial)' ELSE '' END AS "Símbolo Inicial",
+    parte_izq AS "Variable",
+    '→' AS "Flecha",
+    CASE 
+        WHEN tipo_produccion = 1 THEN parte_der1 
+        ELSE parte_der1 || ' ' || COALESCE(parte_der2, '') 
+    END AS "Producción",
+    tipo_produccion AS "Tipo"
+FROM glc_en_fnc
+ORDER BY start DESC, tipo_produccion, parte_izq;
