@@ -216,3 +216,70 @@ begin
     end if;
 end;
 $$ language plpgsql;
+
+
+-- ----------------------------------------------------------
+-- 2. función pl/pgsql para mostrar la matriz cyk triangular dinámica
+-- ----------------------------------------------------------
+create or replace function ver_matriz_triangular()
+returns text as $$
+declare
+    v_cadena text;
+    v_n int;
+    v_i int;
+    v_j int;
+    v_x text[];
+    v_celda text;
+    v_resultado text := '';
+    v_fila_text text;
+    v_cabecera text := '';
+begin
+    -- obtener la cadena actual evaluada
+    select cadena into v_cadena from expresion_json limit 1;
+    v_n := length(v_cadena);
+    
+    if v_n = 0 or v_cadena is null then
+        return 'no hay ninguna cadena evaluada o la matriz está vacía.';
+    end if;
+
+    -- construir cabecera con los índices j y los caracteres de la cadena
+    v_cabecera := ' i \ j |';
+    for v_j in 1..v_n loop
+        v_cabecera := v_cabecera || '   j=' || v_j || ' (' || substring(v_cadena from v_j for 1) || ')   |';
+    end loop;
+    v_resultado := v_cabecera || e'\n' || repeat('-', length(v_cabecera)) || e'\n';
+
+    -- construir cada fila i de la matriz triangular
+    for v_i in 1..v_n loop
+        v_fila_text := '  i=' || v_i || '  |';
+        for v_j in 1..v_n loop
+            if v_j < v_i then
+                -- celdas por debajo de la diagonal (vacías en cyk)
+                v_fila_text := v_fila_text || '         -          |';
+            else
+                -- buscar las variables en la celda (i, j)
+                select x into v_x from matriz_cyk where i = v_i and j = v_j;
+                if v_x is null then
+                    v_fila_text := v_fila_text || '       { }          |';
+                else
+                    v_celda := '{' || array_to_string(v_x, ',') || '}';
+                    v_fila_text := v_fila_text || ' ' || rpad(v_celda, 18) || '|';
+                end if;
+            end if;
+        end loop;
+        v_resultado := v_resultado || v_fila_text || e'\n';
+    end loop;
+    
+    return v_resultado;
+end;
+$$ language plpgsql;
+
+
+-- ==========================================================
+-- instrucciones de uso
+-- ==========================================================
+-- 1. primero ejecuta tu algoritmo con alguna cadena:
+--    select cyk('{"a":'b'}');
+--
+-- 2. luego visualiza la matriz triangular ejecutando:
+--    select ver_matriz_triangular();
