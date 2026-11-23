@@ -97,7 +97,7 @@ end;
 $$ language plpgsql;
 
 
-create or replace function ver_matriz_cyk2()
+create or replace function ver_matriz_cyk()
 returns text as $$
 declare
     v_cadena text;
