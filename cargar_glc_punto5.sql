@@ -1,60 +1,60 @@
 -- Limpiar tabla previa si es necesario
-TRUNCATE TABLE glc_en_fnc;
+TRUNCATE TABLE GLC_en_FNC;
 
--- 1. Símbolo Inicial y Expresiones Aritméticas (A)
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('A', 'A', 'Suma');
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('A', 'A', 'Resta');
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('A', 'A', 'Mul');
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('A', 'A', 'Div');
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('A', 'Simbolo_Pari', 'anid');
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('A', 'Digito', 'N');
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('A', '0', NULL);
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('A', '1', NULL);
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('A', '2', NULL);
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('A', '3', NULL);
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('A', '4', NULL);
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('A', '5', NULL);
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('A', '6', NULL);
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('A', '7', NULL);
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('A', '8', NULL);
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('A', '9', NULL);
+-- 1. Símbolo Inicial y Expresiones Aritméticas (S) -> start = TRUE
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (TRUE, 'S', 'S', 'Suma', 2);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (TRUE, 'S', 'S', 'Resta', 2);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (TRUE, 'S', 'S', 'Mul', 2);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (TRUE, 'S', 'S', 'Div', 2);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (TRUE, 'S', 'Simbolo_Pari', 'anid', 2);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (TRUE, 'S', 'Digito', 'N', 2);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (TRUE, 'S', '0', NULL, 1);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (TRUE, 'S', '1', NULL, 1);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (TRUE, 'S', '2', NULL, 1);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (TRUE, 'S', '3', NULL, 1);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (TRUE, 'S', '4', NULL, 1);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (TRUE, 'S', '5', NULL, 1);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (TRUE, 'S', '6', NULL, 1);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (TRUE, 'S', '7', NULL, 1);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (TRUE, 'S', '8', NULL, 1);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (TRUE, 'S', '9', NULL, 1);
 
 -- 2. Variables Auxiliares Binarias (Operadores y Paréntesis)
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('Suma', 'simbolo_mas', 'A');
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('Resta', 'simbolo_menos', 'A');
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('Mul', 'simbolo_mul', 'A');
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('Div', 'simbolo_div', 'A');
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('anid', 'A', 'Simbolo_Pard');
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (FALSE, 'Suma', 'simbolo_mas', 'S', 2);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (FALSE, 'Resta', 'simbolo_menos', 'S', 2);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (FALSE, 'Mul', 'simbolo_mul', 'S', 2);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (FALSE, 'Div', 'simbolo_div', 'S', 2);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (FALSE, 'anid', 'S', 'Simbolo_Pard', 2);
 
 -- 3. Números de Múltiples Cifras (N)
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('N', 'Digito', 'N');
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('N', '0', NULL);
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('N', '1', NULL);
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('N', '2', NULL);
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('N', '3', NULL);
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('N', '4', NULL);
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('N', '5', NULL);
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('N', '6', NULL);
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('N', '7', NULL);
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('N', '8', NULL);
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('N', '9', NULL);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (FALSE, 'N', 'Digito', 'N', 2);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (FALSE, 'N', '0', NULL, 1);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (FALSE, 'N', '1', NULL, 1);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (FALSE, 'N', '2', NULL, 1);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (FALSE, 'N', '3', NULL, 1);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (FALSE, 'N', '4', NULL, 1);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (FALSE, 'N', '5', NULL, 1);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (FALSE, 'N', '6', NULL, 1);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (FALSE, 'N', '7', NULL, 1);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (FALSE, 'N', '8', NULL, 1);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (FALSE, 'N', '9', NULL, 1);
 
 -- 4. Terminales de Operadores y Paréntesis
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('simbolo_mas', '+', NULL);
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('simbolo_menos', '-', NULL);
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('simbolo_mul', '*', NULL);
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('simbolo_div', '/', NULL);
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('Simbolo_Pari', '(', NULL);
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('Simbolo_Pard', ')', NULL);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (FALSE, 'simbolo_mas', '+', NULL, 1);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (FALSE, 'simbolo_menos', '-', NULL, 1);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (FALSE, 'simbolo_mul', '*', NULL, 1);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (FALSE, 'simbolo_div', '/', NULL, 1);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (FALSE, 'Simbolo_Pari', '(', NULL, 1);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (FALSE, 'Simbolo_Pard', ')', NULL, 1);
 
 -- 5. Dígitos (0 - 9)
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('Digito', '0', NULL);
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('Digito', '1', NULL);
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('Digito', '2', NULL);
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('Digito', '3', NULL);
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('Digito', '4', NULL);
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('Digito', '5', NULL);
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('Digito', '6', NULL);
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('Digito', '7', NULL);
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('Digito', '8', NULL);
-INSERT INTO glc_en_fnc (no_terminal, prod1, prod2) VALUES ('Digito', '9', NULL);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (FALSE, 'Digito', '0', NULL, 1);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (FALSE, 'Digito', '1', NULL, 1);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (FALSE, 'Digito', '2', NULL, 1);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (FALSE, 'Digito', '3', NULL, 1);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (FALSE, 'Digito', '4', NULL, 1);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (FALSE, 'Digito', '5', NULL, 1);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (FALSE, 'Digito', '6', NULL, 1);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (FALSE, 'Digito', '7', NULL, 1);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (FALSE, 'Digito', '8', NULL, 1);
+INSERT INTO GLC_en_FNC (start, parte_izq, parte_der1, parte_der2, tipo_produccion) VALUES (FALSE, 'Digito', '9', NULL, 1);
